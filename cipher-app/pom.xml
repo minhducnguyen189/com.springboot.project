@@ -7,7 +7,7 @@
 		<artifactId>com.springboot.project</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>cipher-impl</artifactId>
+	<artifactId>cipher-app</artifactId>
 	<version>0.0.1</version>
 
 
