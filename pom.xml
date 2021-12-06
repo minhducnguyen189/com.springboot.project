@@ -36,8 +36,8 @@
 	</dependencies>
 
 	<modules>
-		<module>root-application</module>
+		<module>root-app</module>
 		<module>cipher-api</module>
-		<module>cipher-impl</module>
+		<module>cipher-app</module>
 	</modules>
 </project>
