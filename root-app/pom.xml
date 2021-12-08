@@ -30,7 +30,6 @@
 			<groupId>com.springboot.project</groupId>
 			<artifactId>cipher-app</artifactId>
 			<version>0.0.1</version>
-			<scope>compile</scope>
 		</dependency>
 
 	</dependencies>

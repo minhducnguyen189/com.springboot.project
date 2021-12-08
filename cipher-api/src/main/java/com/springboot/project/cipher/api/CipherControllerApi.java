@@ -20,4 +20,12 @@ public interface CipherControllerApi {
 
 	@RequestMapping(method = RequestMethod.POST, path = "v1/cipher/decode/url", produces = MediaType.TEXT_PLAIN_VALUE)
 	ResponseEntity<String> decodeUrl(@RequestBody DataRequest inputData);
+
+	@RequestMapping(method = RequestMethod.POST, path = "v1/cipher/encrypt", produces = MediaType.TEXT_PLAIN_VALUE)
+	ResponseEntity<String> encryptData(@RequestBody DataRequest inputData);
+
+	@RequestMapping(method = RequestMethod.POST, path = "v1/cipher/decrypt", produces = MediaType.TEXT_PLAIN_VALUE)
+	ResponseEntity<String> decryptData(@RequestBody DataRequest inputData);
+
+
 }

@@ -17,7 +17,6 @@
 			<groupId>com.springboot.project</groupId>
 			<artifactId>cipher-api</artifactId>
 			<version>0.0.1</version>
-			<scope>compile</scope>
 		</dependency>
 
 

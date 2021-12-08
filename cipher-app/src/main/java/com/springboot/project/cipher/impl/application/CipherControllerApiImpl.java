@@ -34,5 +34,12 @@ public class CipherControllerApiImpl implements CipherControllerApi {
 		return new ResponseEntity<String>(cipherService.decodeUrl(inputData.getData()), HttpStatus.CREATED);
 	}
 
+	public ResponseEntity<String> encryptData(DataRequest inputData) {
+		return new ResponseEntity<String>(cipherService.encryptData(inputData.getData()), HttpStatus.CREATED);
+	}
+
+	public ResponseEntity<String> decryptData(DataRequest inputData) {
+		return new ResponseEntity<String>(cipherService.decryptData(inputData.getData()), HttpStatus.CREATED);
+	}
 
 }
