@@ -1,6 +1,7 @@
 package com.springboot.project.cipher.impl.application;
 
 import com.springboot.project.cipher.api.model.DataRequest;
+import com.springboot.project.cipher.api.model.MatchDataRequest;
 import com.springboot.project.cipher.impl.service.CipherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,6 +41,24 @@ public class CipherControllerApiImpl implements CipherControllerApi {
 
 	public ResponseEntity<String> decryptData(DataRequest inputData) {
 		return new ResponseEntity<String>(cipherService.decryptData(inputData.getData()), HttpStatus.CREATED);
+	}
+
+	public ResponseEntity<String> hashSHA256(DataRequest inputData) {
+		return new ResponseEntity<String>(cipherService.hashSHA256(inputData.getData()), HttpStatus.CREATED);
+	}
+
+	public ResponseEntity<Boolean> checkMatchSha256(MatchDataRequest inputData) {
+		return new ResponseEntity<Boolean>(cipherService
+				.isSHA256Match(inputData.getRawData(), inputData.getHashedData()), HttpStatus.CREATED);
+	}
+
+	public ResponseEntity<String> hashBcrypt(DataRequest inputData) {
+		return new ResponseEntity<String>(cipherService.bcrypt(inputData.getData()), HttpStatus.CREATED);
+	}
+
+	public ResponseEntity<Boolean> checkMatchBcrypt(MatchDataRequest inputData) {
+		return new ResponseEntity<Boolean>(cipherService
+				.isBcryptMatch(inputData.getRawData(), inputData.getHashedData()), HttpStatus.OK);
 	}
 
 }

@@ -7,4 +7,10 @@ spring:
 
 cipher:
   encryption:
-    secret: adwasekewqmdrqwd
+    aes:
+      secret: adwasekewqmdrqwd
+    sha256:
+      salt: qweasdertdfg
+    bcrypt:
+      saltLength16: asdasdasdqwertyu
+      cost: 10
