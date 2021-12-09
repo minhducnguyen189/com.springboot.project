@@ -13,6 +13,7 @@ import javax.crypto.Cipher;
 import javax.crypto.Mac;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import javax.xml.bind.DatatypeConverter;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
@@ -54,7 +55,7 @@ public class CipherService {
             IvParameterSpec ivParameterSpec = new IvParameterSpec(key);
             cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivParameterSpec);
             byte[] encryptedData = cipher.doFinal(data.getBytes(DEFAULT_CHARSET));
-            return HexBin.encode(encryptedData);
+            return DatatypeConverter.printHexBinary(encryptedData);
         } catch (Exception ex) {
             throw new CipherException("Can not encrypt Data", ex);
         }
@@ -67,7 +68,7 @@ public class CipherService {
             SecretKeySpec secretKeySpec = new SecretKeySpec(key, ENCRYPTION_ALGORITHM);
             IvParameterSpec ivParameterSpec = new IvParameterSpec(key);
             cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivParameterSpec);
-            byte[] decodedData = HexBin.decode(data);
+            byte[] decodedData = DatatypeConverter.parseHexBinary(data);
             byte[] decryptedData = cipher.doFinal(decodedData);
             return new String(decryptedData, DEFAULT_CHARSET);
         } catch (Exception ex) {
@@ -80,7 +81,7 @@ public class CipherService {
             String dataWithSalt = encryptionConfig.getSha256().getSalt().concat(data);
             MessageDigest messageDigest = MessageDigest.getInstance(HASH_ALGORITHM);
             byte[] hash = messageDigest.digest(dataWithSalt.getBytes(DEFAULT_CHARSET));
-            return HexBin.encode(hash);
+            return DatatypeConverter.printHexBinary(hash);
         } catch (Exception ex) {
             throw new CipherException("Can not hash Data", ex);
         }
@@ -116,7 +117,7 @@ public class CipherService {
                     encryptionConfig.getHmac().getSecret().getBytes(DEFAULT_CHARSET), HMAC_SHA256);
             mac.init(secretKeySpec);
             byte[] hmacBytes = mac.doFinal(data.getBytes(DEFAULT_CHARSET));
-            return HexBin.encode(hmacBytes);
+            return DatatypeConverter.printHexBinary(hmacBytes);
         } catch (Exception ex) {
             throw new CipherException("Can not Hmac Data", ex);
         }
