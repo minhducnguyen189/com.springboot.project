@@ -10,10 +10,13 @@ import org.springframework.util.Base64Utils;
 import org.springframework.web.util.UriUtils;
 
 import javax.crypto.Cipher;
+import javax.crypto.Mac;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 @Service
 public class CipherService {
@@ -22,6 +25,7 @@ public class CipherService {
     private static final String CIPHER_TRANSFORMATION = "AES/CBC/PKCS5PADDING";
     private static final String ENCRYPTION_ALGORITHM = "AES";
     private static final String HASH_ALGORITHM = "SHA-256";
+    private static final String HMAC_SHA256 = "HmacSHA256";
 
     @Autowired
     private EncryptionConfig encryptionConfig;
@@ -83,7 +87,7 @@ public class CipherService {
     }
 
     public boolean isSHA256Match(String data, String hashData) {
-        String reHashData = hashSHA256(data);
+        String reHashData = this.hashSHA256(data);
         return reHashData.equals(hashData);
     }
 
@@ -103,6 +107,24 @@ public class CipherService {
         } catch (UnsupportedEncodingException e) {
             throw new CipherException("Bcrypt unsupported encoding");
         }
+    }
+
+    public String hmac(String data) {
+        try {
+            Mac mac = Mac.getInstance(HMAC_SHA256);
+            SecretKeySpec secretKeySpec = new SecretKeySpec(
+                    encryptionConfig.getHmac().getSecret().getBytes(DEFAULT_CHARSET), HMAC_SHA256);
+            mac.init(secretKeySpec);
+            byte[] hmacBytes = mac.doFinal(data.getBytes(DEFAULT_CHARSET));
+            return HexBin.encode(hmacBytes);
+        } catch (Exception ex) {
+            throw new CipherException("Can not Hmac Data", ex);
+        }
+    }
+
+    public boolean isHmacMatch(String data, String hmacData) {
+        String reHmacData = this.hmac(data);
+        return reHmacData.equals(hmacData);
     }
 
 }

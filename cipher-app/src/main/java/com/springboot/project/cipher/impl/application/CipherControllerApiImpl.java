@@ -1,7 +1,12 @@
 package com.springboot.project.cipher.impl.application;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springboot.project.cipher.api.model.DataRequest;
+import com.springboot.project.cipher.api.model.HmacDataRequest;
 import com.springboot.project.cipher.api.model.MatchDataRequest;
+import com.springboot.project.cipher.impl.exception.CipherException;
+import com.springboot.project.cipher.impl.model.HmacMessage;
 import com.springboot.project.cipher.impl.service.CipherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class CipherControllerApiImpl implements CipherControllerApi {
 	
 	private final CipherService cipherService;
+	private final ObjectMapper objectMapper;
 	
 	public ResponseEntity<String> encodeData(DataRequest inputData) {
 		return new ResponseEntity<String>(cipherService.encodeBase64(inputData.getData()), HttpStatus.CREATED);
@@ -49,7 +55,7 @@ public class CipherControllerApiImpl implements CipherControllerApi {
 
 	public ResponseEntity<Boolean> checkMatchSha256(MatchDataRequest inputData) {
 		return new ResponseEntity<Boolean>(cipherService
-				.isSHA256Match(inputData.getRawData(), inputData.getHashedData()), HttpStatus.CREATED);
+				.isSHA256Match(inputData.getRawData(), inputData.getHashedData()), HttpStatus.OK);
 	}
 
 	public ResponseEntity<String> hashBcrypt(DataRequest inputData) {
@@ -60,5 +66,30 @@ public class CipherControllerApiImpl implements CipherControllerApi {
 		return new ResponseEntity<Boolean>(cipherService
 				.isBcryptMatch(inputData.getRawData(), inputData.getHashedData()), HttpStatus.OK);
 	}
+
+	public ResponseEntity<String> hmac(String nonce, String urlCalculate, String timestamp, HmacDataRequest inputData) {
+		String hmacMessageString = this.buildHmacMessage(nonce, urlCalculate, timestamp, inputData);
+		return new ResponseEntity<String>(cipherService.hmac(hmacMessageString), HttpStatus.CREATED);
+	}
+
+	public ResponseEntity<Boolean> checkMatchHmac(String nonce, String urlCalculate, String timestamp, String hmac, HmacDataRequest inputData) {
+		String hmacMessageString = this.buildHmacMessage(nonce, urlCalculate, timestamp, inputData);
+		return new ResponseEntity<Boolean>(cipherService.isHmacMatch(hmacMessageString, hmac), HttpStatus.OK);
+	}
+
+
+	private String buildHmacMessage(String nonce, String urlCalculate, String timestamp, HmacDataRequest inputData) {
+		HmacMessage hmacMessage = new HmacMessage();
+		hmacMessage.setNonce(nonce);
+		hmacMessage.setTimestamp(urlCalculate);
+		hmacMessage.setTimestamp(timestamp);
+		hmacMessage.setHmacDataRequest(inputData);
+		try {
+			return objectMapper.writeValueAsString(hmacMessage);
+		} catch (JsonProcessingException ex) {
+			throw new CipherException("can not parse hmac message: ", ex);
+		}
+	}
+
 
 }
