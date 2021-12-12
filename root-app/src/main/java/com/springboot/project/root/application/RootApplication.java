@@ -1,10 +1,10 @@
 package com.springboot.project.root.application;
 
-import com.springboot.project.cipher.impl.annotation.EnableCipherApi;
+import com.springboot.project.basicAuth.app.annotation.EnableBasicAuthentication;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@EnableCipherApi
+@EnableBasicAuthentication
 @SpringBootApplication
 public class RootApplication {
 

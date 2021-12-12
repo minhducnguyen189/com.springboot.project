@@ -10,4 +10,8 @@
 	<artifactId>cipher-api</artifactId>
 	<version>0.0.1</version>
 
+	<dependencies>
+
+	</dependencies>
+
 </project>
