@@ -34,9 +34,7 @@ public class BasicAuthService {
 
     public boolean checkValidBasicAuth(String basicAuthString) {
         if (StringUtils.isNoneBlank(basicAuthString)) {
-            String encodedAuthString = StringUtils.substring(basicAuthString, "Basic ".length()).trim();
-            String plainBasicAuthString = this.cipherService.decodeBase64(encodedAuthString);
-            String[] plainBasicAuth = plainBasicAuthString.split(":");
+            String[] plainBasicAuth = this.basicAuthStringHandler(basicAuthString);
             String username = plainBasicAuth[0];
             String password = plainBasicAuth[1];
             Optional<UserEntity> userEntity = this.userRepository.findById(username);
@@ -45,6 +43,20 @@ public class BasicAuthService {
             }
         }
         return false;
+    }
+
+    public String getUsername(String basicAuthString) {
+        return this.basicAuthStringHandler(basicAuthString)[0];
+    }
+
+    public String getPassword(String basicAuthString) {
+        return this.basicAuthStringHandler(basicAuthString)[1];
+    }
+
+    private String[] basicAuthStringHandler(String basicAuthString) {
+        String encodedAuthString = StringUtils.substring(basicAuthString, "Basic ".length()).trim();
+        String plainBasicAuthString = this.cipherService.decodeBase64(encodedAuthString);
+        return plainBasicAuthString.split(":");
     }
 
 

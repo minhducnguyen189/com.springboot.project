@@ -3,6 +3,7 @@ package com.springboot.project.basicAuth.app.config;
 import com.springboot.project.basicAuth.app.filter.BasicAuthFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -28,12 +29,13 @@ public class BasicAuthFilterConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/v1/cipher/**", "/v1/auth/**", "/h2/**")
                 .permitAll()
+                .antMatchers("/**")
+                .hasAnyAuthority("ADMIN")
                 .anyRequest()
                 .authenticated()
                 .and()
+                .addFilterBefore(basicAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
-        http.addFilterBefore(basicAuthFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
 }
