@@ -28,23 +28,19 @@ public class BasicAuthFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        if (request instanceof HttpServletRequest) {
-            HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-            String basicAuthString = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
-            if (basicAuthString == null || StringUtils.isBlank(basicAuthString)) {
-                chain.doFilter(httpServletRequest, response);
-                return;
-            }
+        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+        String basicAuthString = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
+        if (basicAuthString != null && StringUtils.isNoneBlank(basicAuthString)) {
+            String username = basicAuthService.getUsername(basicAuthString);
+            String password = basicAuthService.getPassword(basicAuthString);
+            List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ADMIN"));
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username, password, authorities);
             if (this.basicAuthService.checkValidBasicAuth(basicAuthString)) {
-                String username = basicAuthService.getUsername(basicAuthString);
-                String password = basicAuthService.getPassword(basicAuthString);
-                List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ADMIN"));
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username, password, authorities);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-                chain.doFilter(httpServletRequest, response);
-                return;
+            } else {
+                SecurityContextHolder.getContext().setAuthentication(null);
             }
         }
-        chain.doFilter(request, response);
+        chain.doFilter(httpServletRequest, response);
     }
 }

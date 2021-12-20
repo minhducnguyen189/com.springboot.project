@@ -28,12 +28,14 @@ public class BasicAuthFilterConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/v1/cipher/**", "/v1/auth/**", "/h2/**")
                 .permitAll()
+                .and()
+                .addFilterBefore(basicAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .authorizeRequests()
                 .antMatchers("/**")
                 .hasAnyAuthority("ADMIN")
                 .anyRequest()
                 .authenticated()
                 .and()
-                .addFilterBefore(basicAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
