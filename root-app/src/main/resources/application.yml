@@ -26,11 +26,11 @@ spring:
 cipher:
   encryption:
     aes:
-      secret: adwasekewqmdrqwd
+      secret: 0C2FB501A93B550B4550D685B4E1582888C18F65742C3D945A8014114FA268B9
     sha256:
-      salt: qweasdertdfg
+      salt: 0C2FB501A93B550B4550D685B4E1582888C18F65742C3D945A8014114FA268B9
     bcrypt:
-      saltLength16: asdasdasdqwertyu
+      saltLength16: 94A15E1F08550FFC
       cost: 10
     hmac:
-      secret: asdaszxczxcvbc
+      secret: 0C2FB501A93B550B4550D685B4E1582888C18F65742C3D945A8014114FA268B9

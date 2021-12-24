@@ -9,12 +9,15 @@ import org.springframework.util.Base64Utils;
 import org.springframework.web.util.UriUtils;
 
 import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
 import javax.crypto.Mac;
+import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
+import java.security.SecureRandom;
 
 @Service
 public class CipherService {
@@ -24,6 +27,7 @@ public class CipherService {
     private static final String ENCRYPTION_ALGORITHM = "AES";
     private static final String HASH_ALGORITHM = "SHA-256";
     private static final String HMAC_SHA256 = "HmacSHA256";
+    private static final String IV = "94A15E1F08550FFC";
 
     @Autowired
     private EncryptionConfig encryptionConfig;
@@ -44,12 +48,24 @@ public class CipherService {
         return UriUtils.decode(urlString, DEFAULT_CHARSET);
     }
 
+    public String createEncryptKey() {
+        try {
+            SecureRandom secureRandom = new SecureRandom();
+            KeyGenerator keyGenerator = KeyGenerator.getInstance(ENCRYPTION_ALGORITHM);
+            keyGenerator.init(256, secureRandom);
+            SecretKey key = keyGenerator.generateKey();
+            return DatatypeConverter.printHexBinary(key.getEncoded());
+        } catch (Exception ex) {
+            throw new CipherException("Can not generate Secret Key", ex);
+        }
+    }
+
     public String encryptData(String data) {
         try {
             Cipher cipher = Cipher.getInstance(CIPHER_TRANSFORMATION);
-            byte[] key = encryptionConfig.getAes().getSecret().getBytes(DEFAULT_CHARSET);
+            byte[] key = DatatypeConverter.parseHexBinary(encryptionConfig.getAes().getSecret());
             SecretKeySpec secretKeySpec = new SecretKeySpec(key, ENCRYPTION_ALGORITHM);
-            IvParameterSpec ivParameterSpec = new IvParameterSpec(key);
+            IvParameterSpec ivParameterSpec = new IvParameterSpec(IV.getBytes(DEFAULT_CHARSET));
             cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivParameterSpec);
             byte[] encryptedData = cipher.doFinal(data.getBytes(DEFAULT_CHARSET));
             return DatatypeConverter.printHexBinary(encryptedData);
@@ -61,9 +77,9 @@ public class CipherService {
     public String decryptData(String data) {
         try {
             Cipher cipher = Cipher.getInstance(CIPHER_TRANSFORMATION);
-            byte[] key = encryptionConfig.getAes().getSecret().getBytes(DEFAULT_CHARSET);
+            byte[] key = DatatypeConverter.parseHexBinary(encryptionConfig.getAes().getSecret());
             SecretKeySpec secretKeySpec = new SecretKeySpec(key, ENCRYPTION_ALGORITHM);
-            IvParameterSpec ivParameterSpec = new IvParameterSpec(key);
+            IvParameterSpec ivParameterSpec = new IvParameterSpec(IV.getBytes(DEFAULT_CHARSET));
             cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivParameterSpec);
             byte[] decodedData = DatatypeConverter.parseHexBinary(data);
             byte[] decryptedData = cipher.doFinal(decodedData);
@@ -93,7 +109,7 @@ public class CipherService {
         try {
             byte[] hash = BCrypt.withDefaults().hash(encryptionConfig.getBcrypt().getCost(),
                     encryptionConfig.getBcrypt().getSaltLength16().getBytes(DEFAULT_CHARSET), data.getBytes(DEFAULT_CHARSET));
-            return new String(hash, DEFAULT_CHARSET);
+            return DatatypeConverter.printHexBinary(hash);
         } catch (UnsupportedEncodingException e) {
             throw new CipherException("Bcrypt unsupported encoding");
         }
@@ -101,7 +117,7 @@ public class CipherService {
 
     public boolean isBcryptMatch(String data, String hashData) {
         try {
-            return BCrypt.verifyer().verify(data.getBytes(DEFAULT_CHARSET), hashData.getBytes(DEFAULT_CHARSET)).verified;
+            return BCrypt.verifyer().verify(data.getBytes(DEFAULT_CHARSET), DatatypeConverter.parseHexBinary(hashData)).verified;
         } catch (UnsupportedEncodingException e) {
             throw new CipherException("Bcrypt unsupported encoding");
         }
