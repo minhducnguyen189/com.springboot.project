@@ -17,6 +17,7 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
 @Service
@@ -27,6 +28,7 @@ public class CipherService {
     private static final String ENCRYPTION_ALGORITHM = "AES";
     private static final String HASH_ALGORITHM = "SHA-256";
     private static final String HMAC_SHA256 = "HmacSHA256";
+    private static final String SECURE_RANDOM_ALGORITHMS = "SHA1PRNG";
     private static final String IV = "94A15E1F08550FFC";
 
     @Autowired
@@ -108,7 +110,7 @@ public class CipherService {
     public String bcrypt(String data) {
         try {
             byte[] hash = BCrypt.withDefaults().hash(encryptionConfig.getBcrypt().getCost(),
-                    encryptionConfig.getBcrypt().getSaltLength16().getBytes(DEFAULT_CHARSET), data.getBytes(DEFAULT_CHARSET));
+                    this.generateBcryptSalt(), data.getBytes(DEFAULT_CHARSET));
             return DatatypeConverter.printHexBinary(hash);
         } catch (UnsupportedEncodingException e) {
             throw new CipherException("Bcrypt unsupported encoding");
@@ -139,6 +141,15 @@ public class CipherService {
     public boolean isHmacMatch(String data, String hmacData) {
         String reHmacData = this.hmac(data);
         return reHmacData.equals(hmacData);
+    }
+
+    private byte[] generateBcryptSalt() {
+        try {
+            SecureRandom secureRandom = SecureRandom.getInstance(SECURE_RANDOM_ALGORITHMS);
+            return secureRandom.generateSeed(16);
+        } catch (NoSuchAlgorithmException e) {
+            throw new CipherException("AlgorithmException unsupported: ", e);
+        }
     }
 
 }

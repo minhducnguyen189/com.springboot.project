@@ -7,7 +7,6 @@ import lombok.Setter;
 @Setter
 public class Bcrypt {
 
-    private String saltLength16;
     private int cost;
 
 }
