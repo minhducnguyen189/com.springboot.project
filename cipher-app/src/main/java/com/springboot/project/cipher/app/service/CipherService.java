@@ -19,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Arrays;
 import java.util.Objects;
 
 @Service
@@ -29,7 +30,6 @@ public class CipherService {
     private static final String HASH_ALGORITHM = "SHA-256";
     private static final String HMAC_SHA256 = "HmacSHA256";
     private static final String SECURE_RANDOM_ALGORITHMS = "SHA1PRNG";
-    private static final String IV = "94A15E1F08550FFC";
 
     @Autowired
     private EncryptionConfig encryptionConfig;
@@ -67,7 +67,19 @@ public class CipherService {
             Cipher cipher = Cipher.getInstance(CIPHER_TRANSFORMATION);
             byte[] key = DatatypeConverter.parseHexBinary(encryptionConfig.getAes().getSecret());
             SecretKeySpec secretKeySpec = new SecretKeySpec(key, ENCRYPTION_ALGORITHM);
-            IvParameterSpec ivParameterSpec = new IvParameterSpec(this.getIvParameterSpecKey());
+            if (Objects.isNull(encryptionConfig.getAes().getIvSecret())) {
+                byte[] ivParameterSpecKey = this.generateIvParameterSpec();
+                IvParameterSpec ivParameterSpec = new IvParameterSpec(ivParameterSpecKey);
+                cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivParameterSpec);
+                byte[] encryptedData = cipher.doFinal(data.getBytes(StandardCharsets.UTF_8));
+                String ivParameterSpecKeyString = DatatypeConverter.printHexBinary(ivParameterSpecKey);
+                String encryptedDataString = DatatypeConverter.printHexBinary(encryptedData);
+                return ivParameterSpecKeyString.concat(encryptedDataString);
+            }
+            IvParameterSpec ivParameterSpec = new IvParameterSpec(encryptionConfig
+                    .getAes()
+                    .getIvSecret()
+                    .getBytes(StandardCharsets.UTF_8));
             cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivParameterSpec);
             byte[] encryptedData = cipher.doFinal(data.getBytes(StandardCharsets.UTF_8));
             return DatatypeConverter.printHexBinary(encryptedData);
@@ -81,10 +93,21 @@ public class CipherService {
             Cipher cipher = Cipher.getInstance(CIPHER_TRANSFORMATION);
             byte[] key = DatatypeConverter.parseHexBinary(encryptionConfig.getAes().getSecret());
             SecretKeySpec secretKeySpec = new SecretKeySpec(key, ENCRYPTION_ALGORITHM);
-            IvParameterSpec ivParameterSpec = new IvParameterSpec(this.getIvParameterSpecKey());
+            byte[] dataBytes = DatatypeConverter.parseHexBinary(data);
+            if (Objects.isNull(encryptionConfig.getAes().getIvSecret()) && dataBytes.length > 16) {
+                byte[] ivParameterSpecKey = this.getIvParameterSpecKey(dataBytes);
+                byte[] payload = Arrays.copyOfRange(dataBytes, 16, dataBytes.length);
+                IvParameterSpec ivParameterSpec = new IvParameterSpec(ivParameterSpecKey);
+                cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivParameterSpec);
+                byte[] decryptedData = cipher.doFinal(payload);
+                return new String(decryptedData, StandardCharsets.UTF_8);
+            }
+            IvParameterSpec ivParameterSpec = new IvParameterSpec(encryptionConfig
+                    .getAes()
+                    .getIvSecret()
+                    .getBytes(StandardCharsets.UTF_8));
             cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivParameterSpec);
-            byte[] decodedData = DatatypeConverter.parseHexBinary(data);
-            byte[] decryptedData = cipher.doFinal(decodedData);
+            byte[] decryptedData = cipher.doFinal(dataBytes);
             return new String(decryptedData, StandardCharsets.UTF_8);
         } catch (Exception ex) {
             throw new CipherException("Can not decrypt Data", ex);
@@ -144,11 +167,15 @@ public class CipherService {
         }
     }
 
-    private byte[] getIvParameterSpecKey() {
-        if (Objects.isNull(encryptionConfig.getAes().getIvSecret())) {
-            return IV.getBytes(StandardCharsets.UTF_8);
-        }
-        return encryptionConfig.getAes().getIvSecret().getBytes(StandardCharsets.UTF_8);
+    private byte[] generateIvParameterSpec() {
+        byte[] iv = new byte[16];
+        SecureRandom random = new SecureRandom();
+        random.nextBytes(iv);
+        return iv;
+    }
+
+    private byte[] getIvParameterSpecKey(byte[] dataBytes) {
+        return Arrays.copyOfRange(dataBytes, 0, 16);
     }
 
 }
