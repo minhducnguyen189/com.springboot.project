@@ -15,15 +15,15 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Objects;
 
 @Service
 public class CipherService {
 
-    private static final String DEFAULT_CHARSET = "UTF-8";
     private static final String CIPHER_TRANSFORMATION = "AES/CBC/PKCS5PADDING";
     private static final String ENCRYPTION_ALGORITHM = "AES";
     private static final String HASH_ALGORITHM = "SHA-256";
@@ -43,11 +43,11 @@ public class CipherService {
     }
 
     public String encodeUrl(String urlString) {
-        return UriUtils.encode(urlString, DEFAULT_CHARSET);
+        return UriUtils.encode(urlString, StandardCharsets.UTF_8);
     }
 
     public String decodeUrl(String urlString) {
-        return UriUtils.decode(urlString, DEFAULT_CHARSET);
+        return UriUtils.decode(urlString, StandardCharsets.UTF_8);
     }
 
     public String createEncryptKey() {
@@ -67,9 +67,9 @@ public class CipherService {
             Cipher cipher = Cipher.getInstance(CIPHER_TRANSFORMATION);
             byte[] key = DatatypeConverter.parseHexBinary(encryptionConfig.getAes().getSecret());
             SecretKeySpec secretKeySpec = new SecretKeySpec(key, ENCRYPTION_ALGORITHM);
-            IvParameterSpec ivParameterSpec = new IvParameterSpec(IV.getBytes(DEFAULT_CHARSET));
+            IvParameterSpec ivParameterSpec = new IvParameterSpec(this.getIvParameterSpecKey());
             cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivParameterSpec);
-            byte[] encryptedData = cipher.doFinal(data.getBytes(DEFAULT_CHARSET));
+            byte[] encryptedData = cipher.doFinal(data.getBytes(StandardCharsets.UTF_8));
             return DatatypeConverter.printHexBinary(encryptedData);
         } catch (Exception ex) {
             throw new CipherException("Can not encrypt Data", ex);
@@ -81,11 +81,11 @@ public class CipherService {
             Cipher cipher = Cipher.getInstance(CIPHER_TRANSFORMATION);
             byte[] key = DatatypeConverter.parseHexBinary(encryptionConfig.getAes().getSecret());
             SecretKeySpec secretKeySpec = new SecretKeySpec(key, ENCRYPTION_ALGORITHM);
-            IvParameterSpec ivParameterSpec = new IvParameterSpec(IV.getBytes(DEFAULT_CHARSET));
+            IvParameterSpec ivParameterSpec = new IvParameterSpec(this.getIvParameterSpecKey());
             cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivParameterSpec);
             byte[] decodedData = DatatypeConverter.parseHexBinary(data);
             byte[] decryptedData = cipher.doFinal(decodedData);
-            return new String(decryptedData, DEFAULT_CHARSET);
+            return new String(decryptedData, StandardCharsets.UTF_8);
         } catch (Exception ex) {
             throw new CipherException("Can not decrypt Data", ex);
         }
@@ -95,7 +95,7 @@ public class CipherService {
         try {
             String dataWithSalt = encryptionConfig.getSha256().getSalt().concat(data);
             MessageDigest messageDigest = MessageDigest.getInstance(HASH_ALGORITHM);
-            byte[] hash = messageDigest.digest(dataWithSalt.getBytes(DEFAULT_CHARSET));
+            byte[] hash = messageDigest.digest(dataWithSalt.getBytes(StandardCharsets.UTF_8));
             return DatatypeConverter.printHexBinary(hash);
         } catch (Exception ex) {
             throw new CipherException("Can not hash Data", ex);
@@ -108,30 +108,22 @@ public class CipherService {
     }
 
     public String bcrypt(String data) {
-        try {
-            byte[] hash = BCrypt.withDefaults().hash(encryptionConfig.getBcrypt().getCost(),
-                    this.generateBcryptSalt(), data.getBytes(DEFAULT_CHARSET));
-            return DatatypeConverter.printHexBinary(hash);
-        } catch (UnsupportedEncodingException e) {
-            throw new CipherException("Bcrypt unsupported encoding");
-        }
+        byte[] hash = BCrypt.withDefaults().hash(encryptionConfig.getBcrypt().getCost(),
+                this.generateBcryptSalt(), data.getBytes(StandardCharsets.UTF_8));
+        return DatatypeConverter.printHexBinary(hash);
     }
 
     public boolean isBcryptMatch(String data, String hashData) {
-        try {
-            return BCrypt.verifyer().verify(data.getBytes(DEFAULT_CHARSET), DatatypeConverter.parseHexBinary(hashData)).verified;
-        } catch (UnsupportedEncodingException e) {
-            throw new CipherException("Bcrypt unsupported encoding");
-        }
+        return BCrypt.verifyer().verify(data.getBytes(StandardCharsets.UTF_8), DatatypeConverter.parseHexBinary(hashData)).verified;
     }
 
     public String hmac(String data) {
         try {
             Mac mac = Mac.getInstance(HMAC_SHA256);
             SecretKeySpec secretKeySpec = new SecretKeySpec(
-                    encryptionConfig.getHmac().getSecret().getBytes(DEFAULT_CHARSET), HMAC_SHA256);
+                    encryptionConfig.getHmac().getSecret().getBytes(StandardCharsets.UTF_8), HMAC_SHA256);
             mac.init(secretKeySpec);
-            byte[] hmacBytes = mac.doFinal(data.getBytes(DEFAULT_CHARSET));
+            byte[] hmacBytes = mac.doFinal(data.getBytes(StandardCharsets.UTF_8));
             return DatatypeConverter.printHexBinary(hmacBytes);
         } catch (Exception ex) {
             throw new CipherException("Can not Hmac Data", ex);
@@ -150,6 +142,13 @@ public class CipherService {
         } catch (NoSuchAlgorithmException e) {
             throw new CipherException("AlgorithmException unsupported: ", e);
         }
+    }
+
+    private byte[] getIvParameterSpecKey() {
+        if (Objects.isNull(encryptionConfig.getAes().getIvSecret())) {
+            return IV.getBytes(StandardCharsets.UTF_8);
+        }
+        return encryptionConfig.getAes().getIvSecret().getBytes(StandardCharsets.UTF_8);
     }
 
 }

@@ -8,5 +8,6 @@ import lombok.Setter;
 public class Aes {
 
     private String secret;
+    private String ivSecret;
 
 }
