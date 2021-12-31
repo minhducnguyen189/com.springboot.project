@@ -27,7 +27,7 @@ public class CipherService {
 
     private static final String CIPHER_TRANSFORMATION = "AES/CBC/PKCS5PADDING";
     private static final String ENCRYPTION_ALGORITHM = "AES";
-    private static final String HASH_ALGORITHM = "SHA-512";
+    private static final String HASH_ALGORITHM = "SHA-256";
     private static final String HMAC_SHA256 = "HmacSHA256";
     private static final String SECURE_RANDOM_ALGORITHMS = "SHA1PRNG";
 
