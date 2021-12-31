@@ -28,6 +28,7 @@ public class CipherService {
     private static final String CIPHER_TRANSFORMATION = "AES/CBC/PKCS5PADDING";
     private static final String ENCRYPTION_ALGORITHM = "AES";
     private static final String HASH_ALGORITHM = "SHA-256";
+    private static final String HASH_ALGORITHM_512 = "SHA-512";
     private static final String HMAC_SHA256 = "HmacSHA256";
     private static final String SECURE_RANDOM_ALGORITHMS = "SHA1PRNG";
 
@@ -127,6 +128,22 @@ public class CipherService {
 
     public boolean isSHA256Match(String data, String hashData) {
         String reHashData = this.hashSHA256(data);
+        return reHashData.equals(hashData);
+    }
+
+    public String hashSHA512(String data) {
+        try {
+            String dataWithSalt = encryptionConfig.getSha512().getSalt().concat(data);
+            MessageDigest messageDigest = MessageDigest.getInstance(HASH_ALGORITHM_512);
+            byte[] hash = messageDigest.digest(dataWithSalt.getBytes(StandardCharsets.UTF_8));
+            return DatatypeConverter.printHexBinary(hash);
+        } catch (Exception ex) {
+            throw new CipherException("Can not hash Data", ex);
+        }
+    }
+
+    public boolean isSHA512Match(String data, String hashData) {
+        String reHashData = this.hashSHA512(data);
         return reHashData.equals(hashData);
     }
 

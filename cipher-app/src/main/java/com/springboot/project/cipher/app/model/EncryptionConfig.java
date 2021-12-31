@@ -9,6 +9,7 @@ public class EncryptionConfig {
 
     private Aes aes;
     private Sha256 sha256;
+    private Sha512 sha512;
     private Bcrypt bcrypt;
     private Hmac hmac;
 

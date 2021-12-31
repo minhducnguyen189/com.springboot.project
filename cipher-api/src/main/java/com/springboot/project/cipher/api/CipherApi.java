@@ -24,6 +24,10 @@ public interface CipherApi {
 
 	Boolean checkMatchSha256(MatchDataRequest inputData);
 
+	String hashSHA512(DataRequest inputData);
+
+	Boolean checkMatchSha512(MatchDataRequest inputData);
+
 	String hashBcrypt(DataRequest inputData);
 
 	Boolean checkMatchBcrypt(MatchDataRequest inputData);

@@ -58,6 +58,14 @@ public class CipherControllerApiImpl implements CipherApi {
 		return cipherService.isSHA256Match(inputData.getRawData(), inputData.getHashedData());
 	}
 
+	public String hashSHA512(DataRequest inputData) {
+		return cipherService.hashSHA512(inputData.getData());
+	}
+
+	public Boolean checkMatchSha512(MatchDataRequest inputData) {
+		return cipherService.isSHA512Match(inputData.getRawData(), inputData.getHashedData());
+	}
+
 	public String hashBcrypt(DataRequest inputData) {
 		return cipherService.bcrypt(inputData.getData());
 	}

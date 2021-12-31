@@ -61,6 +61,16 @@ public class CipherControllerApi {
 		return new ResponseEntity<>(cipherApi.checkMatchSha256(inputData), HttpStatus.OK);
 	}
 
+	@RequestMapping(method = RequestMethod.POST, path = "v1/cipher/hash/sha512", produces = MediaType.TEXT_PLAIN_VALUE)
+	public ResponseEntity<String> hashSHA512(@RequestBody DataRequest inputData) {
+		return new ResponseEntity<>(cipherApi.hashSHA512(inputData), HttpStatus.CREATED);
+	}
+
+	@RequestMapping(method = RequestMethod.POST, path = "v1/cipher/hash/sha512/check", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Boolean> checkMatchSha512(@RequestBody MatchDataRequest inputData) {
+		return new ResponseEntity<>(cipherApi.checkMatchSha512(inputData), HttpStatus.OK);
+	}
+
 	@RequestMapping(method = RequestMethod.POST, path = "v1/cipher/hash/bcrypt", produces = MediaType.TEXT_PLAIN_VALUE)
 	public ResponseEntity<String> hashBcrypt(@RequestBody DataRequest inputData) {
 		return new ResponseEntity<>(cipherApi.hashBcrypt(inputData), HttpStatus.CREATED);
