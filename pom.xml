@@ -78,5 +78,7 @@
 		<module>cipher-app</module>
         <module>basic-auth-api</module>
 		<module>basic-auth-app</module>
+        <module>hmac-api</module>
+		<module>hmac-app</module>
 	</modules>
 </project>

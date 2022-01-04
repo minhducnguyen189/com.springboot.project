@@ -1,7 +1,6 @@
 package com.springboot.project.cipher.api;
 
 import com.springboot.project.cipher.api.model.DataRequest;
-import com.springboot.project.cipher.api.model.HmacDataRequest;
 import com.springboot.project.cipher.api.model.MatchDataRequest;
 
 public interface CipherApi {
@@ -32,9 +31,4 @@ public interface CipherApi {
 
 	Boolean checkMatchBcrypt(MatchDataRequest inputData);
 
-	String hmac(String nonce, String urlCalculate,
-					String timestamp, HmacDataRequest inputData);
-
-	Boolean checkMatchHmac(String nonce, String urlCalculate, String timestamp,
-										   String hmac, HmacDataRequest inputData);
 }

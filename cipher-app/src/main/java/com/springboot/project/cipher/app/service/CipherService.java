@@ -10,7 +10,6 @@ import org.springframework.web.util.UriUtils;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
-import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -29,7 +28,6 @@ public class CipherService {
     private static final String ENCRYPTION_ALGORITHM = "AES";
     private static final String HASH_ALGORITHM = "SHA-256";
     private static final String HASH_ALGORITHM_512 = "SHA-512";
-    private static final String HMAC_SHA256 = "HmacSHA256";
     private static final String SECURE_RANDOM_ALGORITHMS = "SHA1PRNG";
 
     @Autowired
@@ -155,24 +153,6 @@ public class CipherService {
 
     public boolean isBcryptMatch(String data, String hashData) {
         return BCrypt.verifyer().verify(data.getBytes(StandardCharsets.UTF_8), DatatypeConverter.parseHexBinary(hashData)).verified;
-    }
-
-    public String hmac(String data) {
-        try {
-            Mac mac = Mac.getInstance(HMAC_SHA256);
-            SecretKeySpec secretKeySpec = new SecretKeySpec(
-                    encryptionConfig.getHmac().getSecret().getBytes(StandardCharsets.UTF_8), HMAC_SHA256);
-            mac.init(secretKeySpec);
-            byte[] hmacBytes = mac.doFinal(data.getBytes(StandardCharsets.UTF_8));
-            return DatatypeConverter.printHexBinary(hmacBytes);
-        } catch (Exception ex) {
-            throw new CipherException("Can not Hmac Data", ex);
-        }
-    }
-
-    public boolean isHmacMatch(String data, String hmacData) {
-        String reHmacData = this.hmac(data);
-        return reHmacData.equals(hmacData);
     }
 
     private byte[] generateBcryptSalt() {

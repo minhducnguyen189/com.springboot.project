@@ -2,18 +2,20 @@ package com.springboot.project.root.application.controller;
 
 import com.springboot.project.cipher.api.CipherApi;
 import com.springboot.project.cipher.api.model.DataRequest;
-import com.springboot.project.cipher.api.model.HmacDataRequest;
 import com.springboot.project.cipher.api.model.MatchDataRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class CipherControllerApi {
 
-	@Autowired
+	@Autowired(required = false)
 	private CipherApi cipherApi;
 
 	@RequestMapping(method = RequestMethod.POST, path = "v1/cipher/encode/base64", produces = MediaType.TEXT_PLAIN_VALUE)
@@ -81,20 +83,4 @@ public class CipherControllerApi {
 		return new ResponseEntity<>(cipherApi.checkMatchBcrypt(inputData), HttpStatus.OK);
 	}
 
-	@RequestMapping(method = RequestMethod.POST, path = "v1/cipher/hmac", produces = MediaType.TEXT_PLAIN_VALUE)
-	public ResponseEntity<String> hmac(@RequestHeader(name = "x-nonce") String nonce,
-								@RequestHeader(name = "x-uri-calculate") String urlCalculate,
-								@RequestHeader(name = "x-timestamp") String timestamp,
-								@RequestBody HmacDataRequest inputData) {
-		return new ResponseEntity<>(cipherApi.hmac(nonce, urlCalculate, timestamp, inputData), HttpStatus.CREATED);
-	}
-
-	@RequestMapping(method = RequestMethod.POST, path = "v1/cipher/hmac/check", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Boolean> checkMatchHmac(@RequestHeader(name = "x-nonce") String nonce,
-								@RequestHeader(name = "x-uri-calculate") String urlCalculate,
-								@RequestHeader(name = "x-timestamp") String timestamp,
-								@RequestHeader(name = "x-hmac") String hmac,
-								@RequestBody HmacDataRequest inputData) {
-		return new ResponseEntity<>(cipherApi.checkMatchHmac(nonce, urlCalculate, timestamp, hmac, inputData), HttpStatus.OK);
-	}
 }

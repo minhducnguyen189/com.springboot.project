@@ -1,4 +1,4 @@
-package com.springboot.project.cipher.api.model;
+package com.springboot.project.hmac.api.model;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -22,6 +22,8 @@ spring:
       settings:
         trace: false
         web-allow-others: false
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
 
 cipher:
   encryption:
@@ -34,5 +36,6 @@ cipher:
       salt: D6C44400B134C2BD34C77F7D96D8AEF593A23C533EACBE6AEAE77418814CE874
     bcrypt:
       cost: 10
-    hmac:
-      secret: 6016C42E4DE56AB65D277D3F4C493177B56293DCFEDFD67B1AD0994A507D9D3C
+
+hmac:
+  secret: 6016C42E4DE56AB65D277D3F4C493177B56293DCFEDFD67B1AD0994A507D9D3C
