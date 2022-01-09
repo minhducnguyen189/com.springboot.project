@@ -6,7 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @EnableHmacApi
-//@EnableBasicAuthentication
+@EnableBasicAuthentication
 @SpringBootApplication
 public class RootApplication {
 

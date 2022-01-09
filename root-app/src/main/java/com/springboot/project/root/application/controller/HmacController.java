@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HmacController {
 
-    @Autowired
+    @Autowired(required = false)
     private HmacApi hmacApi;
 
     @RequestMapping(method = RequestMethod.POST, path = "v1/cipher/hmac", produces = MediaType.TEXT_PLAIN_VALUE)
