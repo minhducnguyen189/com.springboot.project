@@ -80,5 +80,6 @@
 		<module>basic-auth-app</module>
         <module>hmac-api</module>
 		<module>hmac-app</module>
+		<module>exception-handler-app</module>
 	</modules>
 </project>
