@@ -1,0 +1,8 @@
+data:
+  name: notebook
+  amount: 500
+  price: 10.5
+  shipper:
+    name: Duc
+    age: 26
+    phone: "0123456789"
