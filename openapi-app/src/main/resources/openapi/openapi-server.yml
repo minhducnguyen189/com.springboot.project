@@ -1,0 +1,100 @@
+openapi: 3.0.1
+info:
+  title: Swagger Openapi Server
+  description: 'This is the Openapi Specification For Feign Server'
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+tags:
+- name: server
+  description: all server apis
+paths:
+  /v1/server/customers:
+    post:
+      tags:
+      - server
+      summary: Create a customer
+      description: create a customer
+      operationId: createCustomer
+      requestBody:
+        description: request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerRequest'
+        required: true
+      responses:
+        201:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uuid
+    get:
+      tags:
+      - server
+      summary: get customers
+      description: get customers
+      operationId: getCustomers
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Customer'
+components:
+  schemas:
+    CustomerRequest:
+      type: object
+      properties:
+        fullName:
+          type: string
+          example: Nguyen Minh Duc
+        email:
+          type: string
+          format: email
+          example: ducnguyen@gmail.com
+        address:
+          type: string
+          example: 3/115 Binh Duong
+        phone:
+          type: string
+          example: 0999123445
+        gender:
+          type: string
+          enum: [M, F]
+        dob:
+          type: string
+          format: date
+    Customer:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        fullName:
+          type: string
+        email:
+          type: string
+          format: email
+        address:
+          type: string
+        phone:
+          type: string
+        gender:
+          type: string
+          enum: [ M, F ]
+        dob:
+          type: string
+          format: date
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time

@@ -82,5 +82,6 @@
 		<module>hmac-app</module>
 		<module>exception-handler-app</module>
         <module>configuration-properties</module>
+        <module>openapi-app</module>
     </modules>
 </project>
