@@ -72,12 +72,16 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
+                            <!-- path to the openapi file spec `.yml` -->
                             <inputSpec>
                                 ${project.basedir}/src/main/resources/openapi/openapi-server.yml
                             </inputSpec>
                             <generatorName>spring</generatorName>
+                            <!-- generated package for api interface -->
                             <apiPackage>com.springboot.cloud.openfeign.openapi.server.app.api</apiPackage>
+                            <!-- generated package for models -->
                             <modelPackage>com.springboot.cloud.openfeign.openapi.server.app.model</modelPackage>
+                            <!-- using supportingFilesToGenerate -->
                             <supportingFilesToGenerate>
                                 ApiUtil.java
                             </supportingFilesToGenerate>
