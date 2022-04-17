@@ -1,0 +1,13 @@
+{
+  "artifactId": "swagger",
+  "basePackage": "com.springboot.project.swagger.app",
+  "apiPackage": "com.springboot.project.swagger.app.api",
+  "configPackage": "com.springboot.project.swagger.app.config",
+  "modelPackage": "com.springboot.project.swagger.app.model",
+  "delegatePattern": "true",
+  "hideGenerationTimestamp": "true",
+  "useBeanValidation": "true",
+  "dateLibrary": "java8",
+  "sourceFolder": "generated-sources/src/main/java",
+  "interfaceOnly": true
+}
