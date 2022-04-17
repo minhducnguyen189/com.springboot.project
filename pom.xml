@@ -83,5 +83,6 @@
 		<module>exception-handler-app</module>
         <module>configuration-properties</module>
         <module>openapi-app</module>
+        <module>swagger-app</module>
     </modules>
 </project>

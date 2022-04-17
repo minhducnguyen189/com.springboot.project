@@ -85,6 +85,8 @@
                             <supportingFilesToGenerate>
                                 ApiUtil.java
                             </supportingFilesToGenerate>
+                            <!-- using templateDirectory custom templates for openapi generator -->
+                            <templateDirectory>${project.basedir}/src/main/resources/templates</templateDirectory>
                             <configOptions>
                                 <delegatePattern>true</delegatePattern>
                                 <dateLibrary>java8</dateLibrary>
