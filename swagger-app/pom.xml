@@ -91,7 +91,7 @@
                                 ${project.basedir}/src/main/resources/swagger/service-config.json
                             </configurationFile>
                             <output>${project.build.directory}</output>
-<!--                            <templateDirectory>src/main/resources/swagger/templates</templateDirectory>-->
+                            <templateDirectory>src/main/resources/swagger/templates</templateDirectory>
                             <configOptions>
                                 <dateLibrary>java8</dateLibrary>
                                 <java8>true</java8>

@@ -1,3 +1,4 @@
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 /**
  * {{#description}}{{.}}{{/description}}{{^description}}{{classname}}{{/description}}
  */
@@ -20,6 +21,7 @@
 {{/ignoreUnknownJacksonAnnotation}}
 {{#additionalModelTypeAnnotations}}{{{.}}}
 {{/additionalModelTypeAnnotations}}
+@JsonIgnoreProperties
 public class {{classname}} {{#parent}}extends {{{parent}}}{{/parent}} {{#serializableModel}}implements Serializable{{/serializableModel}} {
 {{#serializableModel}}
   private static final long serialVersionUID = 1L;
