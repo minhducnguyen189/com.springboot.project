@@ -84,5 +84,6 @@
         <module>configuration-properties</module>
         <module>openapi-app</module>
         <module>swagger-app</module>
+        <module>mustache-app</module>
     </modules>
 </project>
