@@ -7,6 +7,7 @@
                     "sex": {{{sex}}},
                     "age": {{{age}}},
                     "additionalInfo": {
+                        "comment": "{{! ignore me}}",
                         {{#info}}
                             "job": {{{mainJob}}},
                             "companyAddress": {{{workplace}}},
@@ -15,6 +16,9 @@
                         {{#car}}
                              "vehicleId": {{{id}}},
                              "vehicleName": {{{carName}}},
+                        {{/car}}
+                        {{^car}}
+                             "noCar": true,
                         {{/car}}
                         {{> laptop}}
                     }
