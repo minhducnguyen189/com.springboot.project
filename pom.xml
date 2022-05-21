@@ -85,5 +85,6 @@
         <module>openapi-app</module>
         <module>swagger-app</module>
         <module>mustache-app</module>
-    </modules>
+		<module>functional-programming-app</module>
+	</modules>
 </project>
