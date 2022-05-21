@@ -1,0 +1,25 @@
+{
+    "persons": [
+                {{#persons}}
+                {
+                    "id": {{{id}}},
+                    "name": {{{name}}},
+                    "sex": {{{sex}}},
+                    "age": {{{age}}},
+                    "additionalInfo": {
+                        {{#info}}
+                            "job": {{{mainJob}}},
+                            "companyAddress": {{{workplace}}},
+                            "employeeId": {{{staffId}}},
+                        {{/info}}
+                        {{#car}}
+                             "vehicleId": {{{id}}},
+                             "vehicleName": {{{carName}}},
+                        {{/car}}
+                        {{> laptop}}
+                    }
+                }
+                {{^-last}},{{/-last}}
+                {{/persons}}
+    ]
+}

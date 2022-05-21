@@ -16,7 +16,7 @@ public class MustacheTemplateService {
     private Mustache.TemplateLoader templateLoader;
     @Autowired
     private Mustache.Compiler compiler;
-    private static final String CLASS_PATH_TEMPALTE = "test-file";
+    private static final String CLASS_PATH_TEMPALTE = "person";
 
     @Autowired
     private ObjectMapper objectMapper;
