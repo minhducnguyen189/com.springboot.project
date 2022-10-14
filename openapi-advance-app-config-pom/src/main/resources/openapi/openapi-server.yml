@@ -7,14 +7,14 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: 1.0.0
 tags:
-- name: server
-  description: all server apis
+  - name: server
+    description: all server apis
 
 paths:
   /v1/server/customers:
     post:
       tags:
-      - server
+        - server
       summary: Create a customer
       description: create a customer
       operationId: createCustomer
@@ -35,7 +35,7 @@ paths:
                 format: uuid
     get:
       tags:
-      - server
+        - server
       summary: get customers
       description: get customers
       operationId: getCustomers
@@ -52,26 +52,20 @@ components:
   schemas:
     CustomerRequest:
       type: object
-      x-class-extra-annotation:
-        - "@lombok.Setter"
-        - "@lombok.Getter"
-      x-internal-imports:
-        - "import javax.validation.constraints.Max;"
-        - "import javax.validation.constraints.Min;"
+      required:
+        - email
       properties:
         fullName:
           type: string
           example: Nguyen Minh Duc
-          x-field-extra-annotation:
-            - "@Min(value = 1)"
-            - "@Max(value = 100)"
+          minLength: 1
+          maxLength: 100
         email:
           type: string
           format: email
           example: ducnguyen@gmail.com
         address:
           type: string
-          x-field-extra-annotation: "@Max(value = 100)"
           example: 3/115 Binh Duong
         phone:
           type: string
@@ -88,14 +82,11 @@ components:
         id:
           type: string
           format: uuid
-          minLength: 16
         fullName:
           type: string
-          minLength: 1
         email:
           type: string
           format: email
-          minLength: 3
         address:
           type: string
         phone:

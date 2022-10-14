@@ -87,5 +87,6 @@
         <module>mustache-app</module>
 		<module>functional-programming-app</module>
 		<module>openapi-advance-app</module>
+		<module>openapi-advance-app-config-pom</module>
 	</modules>
 </project>
