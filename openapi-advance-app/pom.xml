@@ -8,36 +8,21 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>openapi-app</artifactId>
-    <version>0.0.1</version>
 
+    <artifactId>openapi-advance-app</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
 
-        <!--Openapi Generator-->
         <dependency>
-            <groupId>org.openapitools</groupId>
-            <artifactId>openapi-generator</artifactId>
-            <version>5.4.0</version>
-        </dependency>
-
-
-        <!--Openapi UI with validation-->
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-            <version>2.13.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-            <version>2.13.1</version>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>2.2.3</version>
         </dependency>
 
         <dependency>
@@ -46,21 +31,15 @@
             <version>0.2.2</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-ui</artifactId>
-            <version>1.6.5</version>
-        </dependency>
-
-
     </dependencies>
+
 
     <build>
         <plugins>
             <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
-                <version>5.4.0</version>
+                <version>6.0.0</version>
                 <executions>
                     <execution>
                         <goals>
@@ -81,12 +60,18 @@
                                 ApiUtil.java
                             </supportingFilesToGenerate>
                             <!-- using templateDirectory custom templates for openapi generator -->
-                            <templateDirectory>${project.basedir}/src/main/resources/templates</templateDirectory>
+                            <templateDirectory>${project.basedir}/src/main/resources/templates/java-spring</templateDirectory>
                             <configOptions>
-                                <delegatePattern>true</delegatePattern>
+                                <delegatePattern>false</delegatePattern>
                                 <dateLibrary>java8</dateLibrary>
                                 <interfaceOnly>true</interfaceOnly>
-                                <useBeanValidation>true</useBeanValidation>
+                                <useBeanValidation>false</useBeanValidation>
+                                <additionalModelTypeAnnotations>
+                                    @lombok.Builder
+                                    @lombok.NoArgsConstructor
+                                    @lombok.AllArgsConstructor
+                                </additionalModelTypeAnnotations>
+                                <openApiNullable>false</openApiNullable>
                             </configOptions>
                         </configuration>
                     </execution>
@@ -94,5 +79,7 @@
             </plugin>
         </plugins>
     </build>
+
+
 
 </project>
