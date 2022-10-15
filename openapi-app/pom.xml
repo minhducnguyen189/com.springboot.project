@@ -19,14 +19,6 @@
 
     <dependencies>
 
-        <!--Openapi Generator-->
-        <dependency>
-            <groupId>org.openapitools</groupId>
-            <artifactId>openapi-generator</artifactId>
-            <version>5.4.0</version>
-        </dependency>
-
-
         <!--Openapi UI with validation-->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
