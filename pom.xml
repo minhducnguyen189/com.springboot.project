@@ -88,5 +88,6 @@
 		<module>functional-programming-app</module>
 		<module>openapi-advance-app</module>
 		<module>openapi-advance-app-config-pom</module>
+		<module>openapi-advance-app-supported-vendor</module>
 	</modules>
 </project>

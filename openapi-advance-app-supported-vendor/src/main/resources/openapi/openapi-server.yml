@@ -7,14 +7,14 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: 1.0.0
 tags:
-- name: server
-  description: all server apis
+  - name: server
+    description: all server apis
 
 paths:
   /v1/server/customers:
     post:
       tags:
-      - server
+        - server
       summary: Create a customer
       description: create a customer
       operationId: createCustomer
@@ -35,7 +35,7 @@ paths:
                 format: uuid
     get:
       tags:
-      - server
+        - server
       summary: get customers
       description: get customers
       operationId: getCustomers
@@ -52,32 +52,21 @@ components:
   schemas:
     CustomerRequest:
       type: object
-      x-class-extra-annotation:
-        - "@Setter"
-        - "@Getter"
-      x-internal-imports:
-        - "import lombok.Setter;"
-        - "import lombok.Getter;"
-        - "import javax.validation.constraints.Max;"
-        - "import javax.validation.constraints.Min;"
-        - "import javax.validation.constraints.Size;"
+      x-class-extra-annotation: "@lombok.Setter"
+      required:
+        - email
       properties:
         fullName:
           type: string
           example: Nguyen Minh Duc
-        age:
-          type: integer
-          format: int32
-          x-field-extra-annotation:
-            - "@Min(value = 18)"
-            - "@Max(value = 200)"
+          minLength: 1
+          maxLength: 100
         email:
           type: string
           format: email
           example: ducnguyen@gmail.com
         address:
           type: string
-          x-field-extra-annotation: "@Size(min = 4, max = 200)"
           example: 3/115 Binh Duong
         phone:
           type: string
@@ -94,14 +83,11 @@ components:
         id:
           type: string
           format: uuid
-          minLength: 16
         fullName:
           type: string
-          minLength: 1
         email:
           type: string
           format: email
-          minLength: 3
         address:
           type: string
         phone:
@@ -112,6 +98,7 @@ components:
         dob:
           type: string
           format: date
+          x-field-extra-annotation: "@javax.validation.constraints.PastOrPresent"
         createdAt:
           type: string
           format: date-time
