@@ -89,5 +89,6 @@
 		<module>openapi-advance-app</module>
 		<module>openapi-advance-app-config-pom</module>
 		<module>openapi-advance-app-supported-vendor</module>
-	</modules>
+        <module>web-services</module>
+    </modules>
 </project>

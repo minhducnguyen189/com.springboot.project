@@ -1,0 +1,7 @@
+
+
+country:
+  client:
+    soap:
+      package: com.springboot.project.web.services.model.gen
+      url: http://webservices.oorsprong.org/websamples.countryinfo/CountryInfoService.wso?WSDL
