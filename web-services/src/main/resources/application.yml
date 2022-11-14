@@ -4,4 +4,5 @@ country:
   client:
     soap:
       package: com.springboot.project.web.services.model.gen
-      url: http://webservices.oorsprong.org/websamples.countryinfo/CountryInfoService.wso?WSDL
+      url: http://localhost:8088/mockCountryInfoServiceSoapBinding
+#      url: http://webservices.oorsprong.org/websamples.countryinfo/CountryInfoService.wso?WSDL
