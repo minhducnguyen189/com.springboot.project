@@ -5,6 +5,9 @@
 /.idea
 /*/target
 
+/*/error-detail-queue.data
+/*/error-detail-queue.index
+
 /*/*.iml
 /*.iml
 
