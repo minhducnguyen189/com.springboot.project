@@ -6,6 +6,7 @@ import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.ExcerptTailer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -24,16 +25,21 @@ public class ChronicleQueueService {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private Chronicle chronicle;
+    @Qualifier("errorDetailQueue")
+    private Chronicle errorDetailQueue;
+
+    @Autowired
+    @Qualifier("errorDetailQueueIndex")
+    private Chronicle errorDetailQueueIndex;
 
     @PostConstruct
     public void getCurrentIndex() {
-        this.currentIndex = this.chronicle.lastWrittenIndex();
+        this.currentIndex = this.errorDetailQueueIndex.lastWrittenIndex();
     }
 
     public void addToQueue() {
         try {
-            ExcerptAppender appender = this.chronicle.createAppender();
+            ExcerptAppender appender = this.errorDetailQueue.createAppender();
             appender.startExcerpt();
 
             ErrorDetail errorDetail = this.createErrorDetail();
@@ -50,7 +56,7 @@ public class ChronicleQueueService {
     public List<ErrorDetail> readAllFromQueue() {
         try {
             List<ErrorDetail> errorDetails = new ArrayList<>();
-            ExcerptTailer tailer = this.chronicle.createTailer();
+            ExcerptTailer tailer = this.errorDetailQueue.createTailer();
             while (tailer.nextIndex()) {
                 ErrorDetail errorDetail = this.objectMapper.readValue(tailer.readUTF(), ErrorDetail.class);
                 errorDetails.add(errorDetail);
@@ -64,10 +70,14 @@ public class ChronicleQueueService {
 
     public ErrorDetail getNextItemFromQueue() {
         try {
-            ExcerptTailer tailer = this.chronicle.createTailer();
+            ExcerptTailer tailer = this.errorDetailQueue.createTailer();
             if (tailer.index(1 + this.currentIndex)) {
                 ErrorDetail errorDetail = this.objectMapper.readValue(tailer.readUTF(), ErrorDetail.class);
+                ExcerptAppender indexAppender = this.errorDetailQueueIndex.createAppender();
+                indexAppender.startExcerpt();
+                indexAppender.writeUTF(String.valueOf(tailer.index()));
                 this.currentIndex = tailer.index();
+                indexAppender.finish();
                 tailer.finish();
                 return errorDetail;
             }

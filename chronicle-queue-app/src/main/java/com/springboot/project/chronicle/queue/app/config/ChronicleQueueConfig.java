@@ -16,4 +16,10 @@ public class ChronicleQueueConfig {
         return ChronicleQueueBuilder.indexed(basePath).build();
     }
 
+    @Bean
+    public Chronicle errorDetailQueueIndex() throws IOException {
+        final String basePath = System.getProperty("user.dir") + "/chronicle-queue-app" + "/error-detail-queue-index";
+        return ChronicleQueueBuilder.indexed(basePath).build();
+    }
+
 }
