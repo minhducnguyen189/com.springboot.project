@@ -50,7 +50,7 @@ public class ChronicleQueueService {
             ErrorDetail errorDetail = this.createErrorDetail();
 
             String errorDetailJson = this.objectMapper.writeValueAsString(errorDetail);
-            appender.writeUTF(errorDetailJson);
+            appender.writeUTFΔ(errorDetailJson);
 
             appender.finish();
         } catch (IOException ex) {
@@ -63,7 +63,7 @@ public class ChronicleQueueService {
             List<ErrorDetail> errorDetails = new ArrayList<>();
             ExcerptTailer tailer = this.errorDetailQueue.createTailer();
             while (tailer.nextIndex()) {
-                ErrorDetail errorDetail = this.objectMapper.readValue(tailer.readUTF(), ErrorDetail.class);
+                ErrorDetail errorDetail = this.objectMapper.readValue(tailer.readUTFΔ(), ErrorDetail.class);
                 errorDetails.add(errorDetail);
             }
             tailer.finish();
@@ -77,7 +77,7 @@ public class ChronicleQueueService {
         try {
             ExcerptTailer tailer = this.errorDetailQueue.createTailer();
             if (tailer.index(1 + this.currentIndex)) {
-                ErrorDetail errorDetail = this.objectMapper.readValue(tailer.readUTF(), ErrorDetail.class);
+                ErrorDetail errorDetail = this.objectMapper.readValue(tailer.readUTFΔ(), ErrorDetail.class);
                 ExcerptAppender indexAppender = this.errorDetailQueueIndex.createAppender();
                 indexAppender.startExcerpt();
                 indexAppender.writeUTF(String.valueOf(tailer.index()));
