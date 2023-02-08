@@ -72,7 +72,7 @@ public class ChronicleQueueService {
         }
     }
 
-    public ErrorDetail getNextItemFromQueue() {
+    public ErrorDetail handleNextItemFromQueue() {
         try {
             ExcerptTailer tailer = this.errorDetailQueue.createTailer();
             if (tailer.index(1 + this.currentIndex)) {
@@ -95,7 +95,7 @@ public class ChronicleQueueService {
     public void sendNotifiedEmail() {
         try {
             Thread.sleep(6000);
-            ErrorDetail errorDetail = this.getNextItemFromQueue();
+            ErrorDetail errorDetail = this.handleNextItemFromQueue();
             if (Objects.isNull(errorDetail.getId())) {
                 log.info("No Error Item In Queue: Queue is empty!");
                 return;

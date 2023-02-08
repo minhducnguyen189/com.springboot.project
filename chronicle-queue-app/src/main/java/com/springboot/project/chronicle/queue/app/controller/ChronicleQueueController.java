@@ -29,8 +29,8 @@ public class ChronicleQueueController {
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/v1/chronicle-queue/error-details/polls")
-    public ResponseEntity<ErrorDetail> getNextItemFromQueue() {
-        return ResponseEntity.ok(this.chronicleQueueService.getNextItemFromQueue());
+    public ResponseEntity<ErrorDetail> handleNextItemFromQueue() {
+        return ResponseEntity.ok(this.chronicleQueueService.handleNextItemFromQueue());
     }
 
 }
