@@ -91,5 +91,6 @@
 		<module>openapi-advance-app-supported-vendor</module>
         <module>web-services</module>
         <module>chronicle-queue-app</module>
+        <module>apache-cxf</module>
     </modules>
 </project>
