@@ -6,7 +6,6 @@ import com.springboot.apache.cxf.generated.CountryInfoServiceSoapType;
 import com.springboot.apache.cxf.generated.ObjectFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -29,7 +28,6 @@ public class CountryInfoClientConfig {
     }
 
     @Bean
-    @Qualifier("countryInfoServiceSoapTypeFactory")
     public ObjectFactory countryInfoServiceSoapTypeFactory() {
         return new ObjectFactory();
     }

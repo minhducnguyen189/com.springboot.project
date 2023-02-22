@@ -16,10 +16,10 @@ public class UrlFactory {
     public String buildWebServiceUrl() {
         UriComponents uriComponents = UriComponentsBuilder
                 .newInstance()
-                .scheme(countryInfoProperties.getProtocol())
-                .host(countryInfoProperties.getHostName())
-                .port(countryInfoProperties.getPort())
-                .path(countryInfoProperties.getApi())
+                .scheme(this.countryInfoProperties.getProtocol())
+                .host(this.countryInfoProperties.getHostname())
+                .port(this.countryInfoProperties.getPort())
+                .path(this.countryInfoProperties.getApi())
                 .build();
         return uriComponents.toString();
     }

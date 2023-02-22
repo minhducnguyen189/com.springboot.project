@@ -8,11 +8,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class CountryInfoProperties {
 
-    @Value("${country.client.soap.url}")
-    private String webServiceUrl;
-
-    @Value("${country.client.soap.hostName}")
-    private String hostName;
+    @Value("${country.client.soap.hostname}")
+    private String hostname;
 
     @Value("${country.client.soap.protocol}")
     private String protocol;
