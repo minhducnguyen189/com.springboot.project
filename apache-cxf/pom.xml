@@ -45,15 +45,19 @@
                         <id>generate-sources</id>
                         <phase>generate-sources</phase>
                         <configuration>
+                            <!-- the source root that will contain our generated java classes -->
                             <sourceRoot>${project.build.directory}/generated-sources/java</sourceRoot>
                             <wsdlOptions>
                                 <wsdlOption>
+                                    <!-- the path where we put the wsdl file -->
                                     <wsdl>${basedir}/src/main/resources/countries.wsdl</wsdl>
+                                    <!-- the package that contains our generated java classes -->
                                     <packagenames>com.springboot.apache.cxf.generated</packagenames>
                                 </wsdlOption>
                             </wsdlOptions>
                         </configuration>
                         <goals>
+                            <!-- convert wsdl file to java classes -->
                             <goal>wsdl2java</goal>
                         </goals>
                     </execution>
