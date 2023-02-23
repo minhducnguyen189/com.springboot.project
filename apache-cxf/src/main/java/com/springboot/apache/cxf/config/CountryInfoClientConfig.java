@@ -28,7 +28,7 @@ public class CountryInfoClientConfig {
     }
 
     @Bean
-    public ObjectFactory countryInfoServiceSoapTypeFactory() {
+    public ObjectFactory objectFactory() {
         return new ObjectFactory();
     }
 
