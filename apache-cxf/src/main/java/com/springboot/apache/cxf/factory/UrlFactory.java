@@ -13,7 +13,7 @@ public class UrlFactory {
 
     private final CountryInfoProperties countryInfoProperties;
 
-    public String buildWebServiceUrl() {
+    public String buildCountryInfoWebServiceUrl() {
         UriComponents uriComponents = UriComponentsBuilder
                 .newInstance()
                 .scheme(this.countryInfoProperties.getProtocol())

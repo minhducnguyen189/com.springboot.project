@@ -23,7 +23,7 @@ public class CountryInfoClientConfig {
         CountryInfoService countryInfoService = new CountryInfoService();
         CountryInfoServiceSoapType countryInfoServiceSoapType =  countryInfoService.getCountryInfoServiceSoap();
         Map<String, Object> requestContext = ((BindingProvider) countryInfoServiceSoapType).getRequestContext();
-        requestContext.put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.urlFactory.buildWebServiceUrl());
+        requestContext.put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.urlFactory.buildCountryInfoWebServiceUrl());
         return countryInfoServiceSoapType;
     }
 
