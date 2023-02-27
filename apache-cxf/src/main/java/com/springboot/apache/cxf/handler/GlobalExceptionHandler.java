@@ -24,7 +24,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         errorDetail.setResponseHeaders(ex.getResponseHeaders());
         errorDetail.setCalledUrl(ex.getUrl());
         errorDetail.setApi(request.getDescription(false));
-        return new ResponseEntity<>(errorDetail, HttpStatus.valueOf(ex.getResponseCode()));
+        if (errorDetail.getStatus() >= 400) {
+            return new ResponseEntity<>(errorDetail, HttpStatus.valueOf(ex.getResponseCode()));
+        }
+        errorDetail.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        return new ResponseEntity<>(errorDetail, HttpStatus.SERVICE_UNAVAILABLE);
     }
 
     @ExceptionHandler(value = {Exception.class})
