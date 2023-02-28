@@ -9,5 +9,5 @@ country:
       hostname: webservices.oorsprong.org
       protocol: http
       port: 80
-      api: websamples.countryinfo/websamples.countryinfo
+      api: websamples.countryinfo/CountryInfoService.wso
 #      api: websamples.countryinfo
