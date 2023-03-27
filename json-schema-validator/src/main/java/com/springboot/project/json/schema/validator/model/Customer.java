@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.UUID;
+
 import javax.persistence.Id;
 
 @Getter
@@ -12,7 +14,7 @@ import javax.persistence.Id;
 public class Customer {
 
     @Id
-    private Long id;
+    private UUID id;
     private String fullName;
     private String email;
     private org.bson.Document data;
