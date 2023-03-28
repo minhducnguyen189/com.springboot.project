@@ -1,0 +1,30 @@
+{
+    "customer": {
+        "fullName": "Duc Nguyen",
+        "email": "example@gmail.com",
+        "data": {
+            "fullName": "Duc Nguyen",
+            "email": "example@gmail.com",
+            "ageRange": "ADULT",
+            "identity": {
+                "identityNumber": "ABCE-123-421-942",
+                "address": "123 XYZ Street",
+                "dob": "20/02/1995"
+            },
+            "orders": [
+                {
+                    "orderName": "Duc Order",
+                    "createdDate": "2023-03-28T14:11:44.849+0700",
+                    "lastUpdatedDate": "2023-03-28T14:11:44.849+0700",
+                    "items": [
+                        {
+                            "itemName": "PS5",
+                            "quantity": 1,
+                            "price": 599.99
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

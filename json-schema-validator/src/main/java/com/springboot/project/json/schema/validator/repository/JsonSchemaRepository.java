@@ -11,4 +11,6 @@ public interface JsonSchemaRepository extends MongoRepository<JsonSchemaValidato
 
     List<JsonSchemaValidator> findJsonSchemaValidatorByName(String name);
 
+    JsonSchemaValidator findFirstByOrderByVersionDesc(String name);
+
 }
