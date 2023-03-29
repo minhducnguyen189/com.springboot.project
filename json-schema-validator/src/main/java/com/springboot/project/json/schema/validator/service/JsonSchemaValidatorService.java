@@ -5,6 +5,7 @@ import com.springboot.project.json.schema.validator.model.JsonValidationResponse
 import com.springboot.project.json.schema.validator.repository.JsonSchemaRepository;
 
 import lombok.RequiredArgsConstructor;
+import net.bytebuddy.implementation.bytecode.Throw;
 
 import org.bson.Document;
 import org.everit.json.schema.Schema;
@@ -13,9 +14,9 @@ import org.everit.json.schema.loader.SchemaLoader;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -24,21 +25,21 @@ public class JsonSchemaValidatorService {
 
     private final JsonSchemaRepository jsonSchemaRepository;
     private final CustomDateTimeValidator customDateTimeValidator;
+    private final SequenceGeneratorService sequenceGeneratorService;
 
     public JsonSchemaValidator createJsonSchemaValidator(String json) {
         JsonSchemaValidator jsonSchemaValidator = new JsonSchemaValidator();
         Document data = Document.parse(json);
         String schemaName = data.getString("name");
         Document value = data.get("value", Document.class);
-        List<JsonSchemaValidator> existedJsonSchemas = this.getJsonSchemaValidatorByName(schemaName);
-        if (CollectionUtils.isEmpty(existedJsonSchemas)) {
-            jsonSchemaValidator.setVersion(1L);
+        if (Objects.isNull(schemaName) || Objects.isNull(value))
+            throw new IllegalArgumentException("schemaName or Value Can't be null");
+        JsonSchemaValidator latestJsonSchema = this.getlatestJsonSchemaVersion(schemaName);
+        if (Objects.isNull(latestJsonSchema)) {
             return this.saveNewJsonSchemaValidator(jsonSchemaValidator, schemaName, value);
         }
-        JsonSchemaValidator latestJsonSchema = this.getlatestJsonSchemaVersion(schemaName);
         latestJsonSchema.setStatus("inactive");
         this.jsonSchemaRepository.save(latestJsonSchema);
-        jsonSchemaValidator.setVersion(latestJsonSchema.getVersion() + 1);
         this.saveNewJsonSchemaValidator(jsonSchemaValidator, schemaName, value);
         return this.jsonSchemaRepository.save(jsonSchemaValidator);
     }
@@ -62,7 +63,7 @@ public class JsonSchemaValidatorService {
         jsonSchemaValidator.setId(UUID.randomUUID());
         jsonSchemaValidator.setName(schemaName);
         jsonSchemaValidator.setStatus("active");
-        jsonSchemaValidator.setVersion(jsonSchemaValidator.getVersion());
+        jsonSchemaValidator.setVersion(sequenceGeneratorService.generateVersionSequence(schemaName));
         jsonSchemaValidator.setValue(data);
         return this.jsonSchemaRepository.save(jsonSchemaValidator);
     }
