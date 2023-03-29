@@ -76,7 +76,6 @@ public class JsonSchemaValidatorService {
             SchemaLoader loader = SchemaLoader.builder()
                 .addFormatValidator(customDateTimeValidator)
                 .schemaJson(new JSONObject(validationSchema))
-                .draftV7Support()
                 .enableOverrideOfBuiltInFormatValidators()
                 .build();
             Schema schema = loader.load().build();
