@@ -5,7 +5,6 @@ import com.springboot.project.json.schema.validator.model.JsonValidationResponse
 import com.springboot.project.json.schema.validator.repository.JsonSchemaRepository;
 
 import lombok.RequiredArgsConstructor;
-import net.bytebuddy.implementation.bytecode.Throw;
 
 import org.bson.Document;
 import org.everit.json.schema.Schema;

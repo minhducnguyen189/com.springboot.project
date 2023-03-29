@@ -2,8 +2,6 @@ package com.springboot.project.json.schema.validator.service;
 
 import java.util.Objects;
 
-import javax.validation.constraints.NotNull;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoOperations;
