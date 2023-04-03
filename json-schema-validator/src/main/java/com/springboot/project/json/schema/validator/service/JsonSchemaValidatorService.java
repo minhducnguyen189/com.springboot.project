@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -33,10 +34,11 @@ public class JsonSchemaValidatorService {
         Document value = data.get("value", Document.class);
         if (Objects.isNull(schemaName) || Objects.isNull(value))
             throw new IllegalArgumentException("schemaName or Value Can't be null");
-        JsonSchemaValidator latestJsonSchema = this.getlatestJsonSchemaVersion(schemaName);
-        if (Objects.isNull(latestJsonSchema)) {
+        Optional<JsonSchemaValidator> latestJsonSchemaOpt = this.getlatestActiveJsonSchemaVersion(schemaName);
+        if (!latestJsonSchemaOpt.isPresent()) {
             return this.saveNewJsonSchemaValidator(jsonSchemaValidator, schemaName, value);
         }
+        JsonSchemaValidator latestJsonSchema = latestJsonSchemaOpt.get();
         latestJsonSchema.setStatus("inactive");
         this.jsonSchemaRepository.save(latestJsonSchema);
         this.saveNewJsonSchemaValidator(jsonSchemaValidator, schemaName, value);
@@ -48,13 +50,14 @@ public class JsonSchemaValidatorService {
     }
 
     public JsonValidationResponse validateJsonData(String schemaName, String jsonData) {
-        JsonSchemaValidator jsonSchemaValidator = this.getlatestJsonSchemaVersion(schemaName);
-        if (Objects.isNull(jsonSchemaValidator)) {
+        Optional<JsonSchemaValidator> latestJsonSchemaOpt = this.getlatestActiveJsonSchemaVersion(schemaName);
+        if (!latestJsonSchemaOpt.isPresent()) {
             return this.createJsonValidationResponse(false, jsonData, 0L);
         }
-        Document jsonSchema = jsonSchemaValidator.getValue();
+        JsonSchemaValidator latestJsonSchema = latestJsonSchemaOpt.get();
+        Document jsonSchema = latestJsonSchema.getValue();
         boolean isValidJson = this.validateJson(jsonSchema.toJson(), jsonData);
-        return this.createJsonValidationResponse(isValidJson, jsonData, jsonSchemaValidator.getVersion());
+        return this.createJsonValidationResponse(isValidJson, jsonData, latestJsonSchema.getVersion());
     }
 
     private JsonValidationResponse createJsonValidationResponse(boolean isValidJson, String jsonData, Long version) {
@@ -74,8 +77,15 @@ public class JsonSchemaValidatorService {
         return this.jsonSchemaRepository.save(jsonSchemaValidator);
     }
 
-    private JsonSchemaValidator getlatestJsonSchemaVersion(String schemaName) {
-        return this.jsonSchemaRepository.findFirstByOrderByVersionDesc(schemaName);
+    private Optional<JsonSchemaValidator> getlatestActiveJsonSchemaVersion(String schemaName) {
+        List<JsonSchemaValidator> jsonSchemaValidators = this.jsonSchemaRepository.findByOrderByVersionDesc(schemaName);
+        for (JsonSchemaValidator jsonSchemaValidator: jsonSchemaValidators) {
+            if (jsonSchemaValidator.getStatus().equalsIgnoreCase("active")) {
+                return Optional.of(jsonSchemaValidator);
+            }
+        }
+        return Optional.empty();
+
     }
 
     private boolean validateJson(String validationSchema, String target) {
