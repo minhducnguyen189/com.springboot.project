@@ -48,13 +48,20 @@ public class JsonSchemaValidatorService {
     }
 
     public JsonValidationResponse validateJsonData(String schemaName, String jsonData) {
-        JsonValidationResponse jsonValidationResponse = new JsonValidationResponse();
         JsonSchemaValidator jsonSchemaValidator = this.getlatestJsonSchemaVersion(schemaName);
+        if (Objects.isNull(jsonSchemaValidator)) {
+            return this.createJsonValidationResponse(false, jsonData, 0L);
+        }
         Document jsonSchema = jsonSchemaValidator.getValue();
         boolean isValidJson = this.validateJson(jsonSchema.toJson(), jsonData);
+        return this.createJsonValidationResponse(isValidJson, jsonData, jsonSchemaValidator.getVersion());
+    }
+
+    private JsonValidationResponse createJsonValidationResponse(boolean isValidJson, String jsonData, Long version) {
+        JsonValidationResponse jsonValidationResponse = new JsonValidationResponse();
         jsonValidationResponse.setValidJson(isValidJson);
         jsonValidationResponse.setJsonInput(Document.parse(jsonData));
-        jsonValidationResponse.setSchemaVersion(jsonSchemaValidator.getVersion());
+        jsonValidationResponse.setSchemaVersion(version);
         return jsonValidationResponse;
     }
 

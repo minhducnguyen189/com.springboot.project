@@ -5,6 +5,8 @@ import com.springboot.project.json.schema.validator.service.CustomerService;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,11 @@ public class CustomerController {
     @RequestMapping(method = RequestMethod.POST, path = "/v1/customers")
     public ResponseEntity<Customer> createCustomer(@RequestBody String customerJson) {
         return new ResponseEntity<>(this.customerService.createCustomer(customerJson), HttpStatus.CREATED);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, path = "/v1/customers")
+    public ResponseEntity<List<Customer>> getCustomers() {
+        return new ResponseEntity<>(this.customerService.getCustomers(), HttpStatus.OK);
     }
 
 }
