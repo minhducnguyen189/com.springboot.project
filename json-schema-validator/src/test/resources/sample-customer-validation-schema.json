@@ -121,7 +121,10 @@
                                     "enum": [
                                         "ADULT"
                                     ]
-                                }
+                                },
+                                "required": [
+                                    "ageRange"
+                                ]
                             }
                         },
                         "then": {
