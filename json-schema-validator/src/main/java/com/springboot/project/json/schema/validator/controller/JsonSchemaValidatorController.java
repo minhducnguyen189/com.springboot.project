@@ -24,7 +24,7 @@ public class JsonSchemaValidatorController {
     private final JsonSchemaValidatorService jsonSchemaValidatorService;
 
     @RequestMapping(method = RequestMethod.POST, path = "/v1/json/validator/schemas")
-    public ResponseEntity<JsonSchemaValidator> createCustomer(@RequestBody String jsonSchema) {
+    public ResponseEntity<JsonSchemaValidator> createJsonSchemaValidator(@RequestBody String jsonSchema) {
         return new ResponseEntity<>(this.jsonSchemaValidatorService.createJsonSchemaValidator(jsonSchema), HttpStatus.CREATED);
     }
 
