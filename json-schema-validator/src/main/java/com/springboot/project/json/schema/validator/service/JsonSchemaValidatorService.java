@@ -95,26 +95,15 @@ public class JsonSchemaValidatorService {
     }
 
     private boolean validateInputJsonSchemaStructure(String target) {
-        try {
-            String jsonSchemaStructure = JSON_SCHEMA_STRUCTURE_CACHE.computeIfAbsent("jsonSchemaStructureValidator", (s) -> {
-                ClassPathResource resource = new ClassPathResource("validation/JsonSchemaStructureValidator.json");
-                try {
-                    return StreamUtils.copyToString(resource.getInputStream(), StandardCharsets.UTF_8);
-                } catch (IOException e) {
-                    throw new RuntimeException("There is no JsonSchemaStructureValidator in the source code!", e);
-                }
-            });
-            SchemaLoader loader = SchemaLoader.builder()
-                    .addFormatValidator(customDateTimeValidator)
-                    .schemaJson(new JSONObject(jsonSchemaStructure))
-                    .enableOverrideOfBuiltInFormatValidators()
-                    .build();
-            Schema schema = loader.load().build();
-            schema.validate(new JSONObject(target));
-            return true;
-        } catch (ValidationException e) {
-            return false;
-        }
+        String jsonSchemaStructure = JSON_SCHEMA_STRUCTURE_CACHE.computeIfAbsent("jsonSchemaStructureValidator", (s) -> {
+            ClassPathResource resource = new ClassPathResource("validation/JsonSchemaStructureValidator.json");
+            try {
+                return StreamUtils.copyToString(resource.getInputStream(), StandardCharsets.UTF_8);
+            } catch (IOException e) {
+                throw new RuntimeException("There is no JsonSchemaStructureValidator in the source code!", e);
+            }
+        });
+        return this.validateJson(jsonSchemaStructure, target);
     }
 
     private boolean validateJson(String validationSchema, String target) {
