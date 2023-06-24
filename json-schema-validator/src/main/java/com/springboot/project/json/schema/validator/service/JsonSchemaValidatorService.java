@@ -12,28 +12,38 @@ import org.everit.json.schema.ValidationException;
 import org.everit.json.schema.loader.SchemaLoader;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StreamUtils;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class JsonSchemaValidatorService {
+
+    private static final ConcurrentHashMap<String, String> JSON_SCHEMA_STRUCTURE_CACHE = new ConcurrentHashMap<>();
 
     private final JsonSchemaRepository jsonSchemaRepository;
     private final CustomDateTimeValidator customDateTimeValidator;
     private final SequenceGeneratorService sequenceGeneratorService;
 
     public JsonSchemaValidator createJsonSchemaValidator(String json) {
+        if (!this.validateInputJsonSchemaStructure(json))
+            throw new IllegalArgumentException("Validation failed for input json schema!");
         JsonSchemaValidator jsonSchemaValidator = new JsonSchemaValidator();
         Document data = Document.parse(json);
         String schemaName = data.getString("name");
         Document value = data.get("value", Document.class);
-        if (Objects.isNull(schemaName) || Objects.isNull(value))
-            throw new IllegalArgumentException("schemaName or Value Can't be null");
         Optional<JsonSchemaValidator> latestJsonSchemaOpt = this.getlatestActiveJsonSchemaVersion(schemaName);
         if (!latestJsonSchemaOpt.isPresent()) {
             return this.saveNewJsonSchemaValidator(jsonSchemaValidator, schemaName, value);
@@ -86,6 +96,29 @@ public class JsonSchemaValidatorService {
         }
         return Optional.empty();
 
+    }
+
+    private boolean validateInputJsonSchemaStructure(String target) {
+        try {
+            String jsonSchemaStructure = JSON_SCHEMA_STRUCTURE_CACHE.computeIfAbsent("jsonSchemaStructureValidator", (s) -> {
+                ClassPathResource resource = new ClassPathResource("validation/JsonSchemaStructureValidator.json");
+                try {
+                    return StreamUtils.copyToString(resource.getInputStream(), StandardCharsets.UTF_8);
+                } catch (IOException e) {
+                    throw new RuntimeException("There is no JsonSchemaStructureValidator in the source code!", e);
+                }
+            });
+            SchemaLoader loader = SchemaLoader.builder()
+                    .addFormatValidator(customDateTimeValidator)
+                    .schemaJson(new JSONObject(jsonSchemaStructure))
+                    .enableOverrideOfBuiltInFormatValidators()
+                    .build();
+            Schema schema = loader.load().build();
+            schema.validate(new JSONObject(target));
+            return true;
+        } catch (ValidationException e) {
+            return false;
+        }
     }
 
     private boolean validateJson(String validationSchema, String target) {

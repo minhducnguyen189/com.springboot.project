@@ -1,0 +1,57 @@
+{
+  "$id": "http://example.com/example.json",
+  "type": "object",
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "required": [
+    "name",
+    "value"
+  ],
+  "properties": {
+    "name": {
+      "$id": "#/properties/name",
+      "type": "string",
+      "minLength": 1
+    },
+    "value": {
+      "$id": "#/properties/value",
+      "type": "object",
+      "required": [
+        "properties",
+        "$id",
+        "$schema",
+        "type",
+        "required"
+      ],
+      "properties": {
+        "$id": {
+          "$id": "#/properties/$id",
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "$id": "#/properties/type",
+          "type": "string",
+          "minLength": 1
+        },
+        "$schema": {
+          "$id": "#/properties/$schema",
+          "type": "string",
+          "minLength": 1
+        },
+        "required": {
+          "$id": "#/properties/required",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "properties": {
+          "$id": "#/properties/properties",
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "additionalProperties": true
+  }
+}
