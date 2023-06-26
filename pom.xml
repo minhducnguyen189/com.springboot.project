@@ -99,5 +99,6 @@
         <module>chronicle-queue-app</module>
         <module>apache-cxf</module>
 		<module>json-schema-validator</module>
+		<module>drools-spring-app</module>
 	</modules>
 </project>
