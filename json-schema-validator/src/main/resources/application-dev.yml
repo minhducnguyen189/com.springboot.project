@@ -3,7 +3,7 @@
 spring:
   data:
     mongodb:
-      uri: mongodb://${USERNAME}:${PASSWORD}@${DB_URL}:27017/admin?maxMessageSize=52428800
+      uri: mongodb://${USERNAME}:${PASSWORD}@${DB_URL}:${PORT}/admin?maxMessageSize=52428800
       auto-startup: true
   jpa:
     show-sql: true
