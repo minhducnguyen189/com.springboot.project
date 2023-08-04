@@ -94,5 +94,6 @@
         <module>apache-cxf</module>
 		<module>json-schema-validator</module>
 		<module>drools-spring-app</module>
-	</modules>
+        <module>config-content-type-response-app</module>
+    </modules>
 </project>

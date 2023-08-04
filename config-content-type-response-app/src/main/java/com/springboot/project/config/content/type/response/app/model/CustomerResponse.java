@@ -1,4 +1,4 @@
-package com.springboot.project.com.exception.handler.app.model;
+package com.springboot.project.config.content.type.response.app.model;
 
 import java.util.Date;
 import java.util.UUID;
