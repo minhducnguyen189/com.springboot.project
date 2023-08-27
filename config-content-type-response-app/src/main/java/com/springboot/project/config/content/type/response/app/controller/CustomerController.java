@@ -27,7 +27,7 @@ public class CustomerController {
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/v1/customers"
-            ,produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
+            ,produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE}
     )
     public ResponseEntity<List<CustomerResponse>> getCustomers() {
         return new ResponseEntity<>(this.customers, HttpStatus.OK);
