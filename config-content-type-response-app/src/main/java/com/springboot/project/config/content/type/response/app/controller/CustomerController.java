@@ -2,13 +2,16 @@ package com.springboot.project.config.content.type.response.app.controller;
 
 import com.springboot.project.config.content.type.response.app.model.CustomerRequest;
 import com.springboot.project.config.content.type.response.app.model.CustomerResponse;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -31,6 +34,17 @@ public class CustomerController {
     )
     public ResponseEntity<List<CustomerResponse>> getCustomers() {
         return new ResponseEntity<>(this.customers, HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, path = "/v1/customers/{id}")
+    public ResponseEntity<CustomerResponse> getCustomerById(@NotNull @PathVariable(value = "id") UUID customerId) {
+        Optional<CustomerResponse> customerResponse = this.customers.stream()
+                .filter(customer -> customer.getId().equals(customerId))
+                .findFirst();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_XML);
+        return customerResponse.map(response -> new ResponseEntity<>(response, headers, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     private CustomerResponse toCustomerResponse(CustomerRequest customerRequest) {
