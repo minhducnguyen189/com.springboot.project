@@ -2,6 +2,7 @@
 management:
   endpoint:
     health:
+      enable: true
       probes:
         enabled: true
       livenessState:
